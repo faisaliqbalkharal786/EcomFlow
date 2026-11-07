@@ -1,3 +1,5 @@
+﻿'use client';
+
 import React, { useState } from 'react';
 import { 
   Phone, 
@@ -9,9 +11,9 @@ import {
   Clock, 
   PhoneOff, 
   FileText 
- from 'lucide-react';
+} from 'lucide-react';
 
-export interface AICallLog 
+export interface AICallLog {
   id: string;
   customerName: string;
   phoneNumber: string;
@@ -19,17 +21,18 @@ export interface AICallLog
   status: 'COMPLETED' | 'FAILED' | 'PENDING' | 'NO_ANSWER';
   duration: string;
   transcript: string;
-  createdAt: string;}
+  createdAt: string;
+}
 
 const mockAICallLogs: AICallLog[] = [
-  
+  {
     id: 'log-1',
     customerName: 'Ayesha Khan',
     phoneNumber: '+92 300 1234567',
     orderId: 'ORD-1001',
     status: 'COMPLETED',
     duration: '45s',
-    transcript: 'AI Agent: Assalam-o-Alaikum! Main EcomFlow se bol rahi hoon, aapne jo lawn dress order kiya hai uski confirmation ke liye call ki thi.\nCustomer: Ji bilkul, order confirm hai.\nAI Agent: Shukriya, aapka order dispatch kar diya jayega.',
+    transcript: 'AI Agent: Assalam-o-Alaikum! Main EcomFlow se bol rahi hoon, aapne jo order place kiya hai uski confirmation ke liye call ki thi.\nCustomer: Ji bilkul, order confirm hai.\nAI Agent: Shukriya, aapka order dispatch kar diya jayega.',
     createdAt: '2 mins ago'
   },
   {
@@ -41,15 +44,15 @@ const mockAICallLogs: AICallLog[] = [
     duration: '15s',
     transcript: 'Call attempted. Customer did not pick up the phone. Automated follow-up WhatsApp message sent.',
     createdAt: '15 mins ago'
-  
+  }
 ];
 
-interface AICallLogsModalProps 
+interface AICallLogsModalProps {
   isOpen: boolean;
   onClose: () => void;
+}
 
-
-export default function AICallLogsModal({ isOpen, onClose }: AICallLogsModalProps) 
+export default function AICallLogsModal({ isOpen, onClose }: AICallLogsModalProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [selectedLog, setSelectedLog] = useState<AICallLog | null>(null);
@@ -64,9 +67,9 @@ export default function AICallLogsModal({ isOpen, onClose }: AICallLogsModalProp
     
     const matchesStatus = statusFilter === 'ALL' || log.status === statusFilter;
     return matchesSearch && matchesStatus;
-  );
+  });
 
-  const getStatusBadge = (status: AICallLog['status']) => 
+  const getStatusBadge = (status: AICallLog['status']) => {
     switch (status) {
       case 'COMPLETED':
         return (
@@ -139,11 +142,7 @@ export default function AICallLogsModal({ isOpen, onClose }: AICallLogsModalProp
               <button
                 key={status}
                 onClick={() => setStatusFilter(status)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap ${
-                  statusFilter === status 
-                    ? 'bg-indigo-600 text-white shadow-sm' 
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
+                className={px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap }
               >
                 {status.replace('_', ' ')}
               </button>
@@ -156,7 +155,7 @@ export default function AICallLogsModal({ isOpen, onClose }: AICallLogsModalProp
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
             {/* Logs List */}
-            <div className={`lg:col-span-2 space-y-3 ${selectedLog ? 'hidden lg:block' : 'block'}`}>
+            <div className={lg:col-span-2 space-y-3 }>
               {filteredLogs.length === 0 ? (
                 <div className="text-center py-12 bg-white rounded-xl border border-slate-100 p-8">
                   <PhoneOff className="w-12 h-12 text-slate-300 mx-auto mb-3" />
@@ -167,11 +166,7 @@ export default function AICallLogsModal({ isOpen, onClose }: AICallLogsModalProp
                   <div 
                     key={log.id}
                     onClick={() => setSelectedLog(log)}
-                    className={`p-4 rounded-xl border transition-all cursor-pointer bg-white ${
-                      selectedLog?.id === log.id 
-                        ? 'border-indigo-500 ring-2 ring-indigo-500/10 shadow-sm' 
-                        : 'border-slate-200/80 hover:border-slate-300 hover:shadow-sm'
-                    }`}
+                    className={p-4 rounded-xl border transition-all cursor-pointer bg-white }
                   >
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
@@ -198,7 +193,7 @@ export default function AICallLogsModal({ isOpen, onClose }: AICallLogsModalProp
             </div>
 
             {/* Transcript Panel */}
-            <div className={`lg:col-span-1 bg-white rounded-xl border border-slate-200/80 p-5 flex flex-col ${selectedLog ? 'block' : 'hidden lg:flex'}`}>
+            <div className={lg:col-span-1 bg-white rounded-xl border border-slate-200/80 p-5 flex flex-col }>
               {selectedLog ? (
                 <>
                   <div className="flex items-center justify-between pb-4 border-b border-slate-100">
