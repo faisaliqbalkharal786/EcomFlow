@@ -1,0 +1,145 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// NextAuth & User Model
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  password      String?   // Hashed with bcryptjs for credentials login
+  image         String?
+  workspaceName     String    @default("Apex Global Brands")
+  customVoicePrompt String?   @db.Text  // Per-tenant custom AI calling script with variable substitution
+  
+  accounts         Account[]
+  sessions         Session[]
+  storeConnections StoreConnection[]
+  
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// E-commerce SaaS Core Models
+model Order {
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique
+  channel         String      // "Shopify" | "Amazon" | "WooCommerce" | "eBay"
+  channelOrderId  String?
+  customerName    String
+  customerEmail   String?
+  phone           String
+  amount          Float
+  currency        String      @default("USD")
+  status          String      @default("Pending") // "Pending" | "Processing" | "Shipped" | "Delivered" | "Cancelled"
+  aiVerification  String      @default("Pending") // "Verified" | "Fake" | "Calling" | "Pending"
+  shippingAddress String?
+  city            String?
+  state           String?
+  carrier         String?
+  trackingNumber  String?
+  labelUrl        String?
+  labelGenerated  Boolean     @default(false)
+  
+  callLogs        CallLog[]
+  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([status])
+  @@index([aiVerification])
+  @@index([channel])
+  @@map("orders")
+}
+
+model CallLog {
+  id              String    @id @default(cuid())
+  orderId         String
+  order           Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  duration        String    // e.g. "42s"
+  status          String    // "Verified" | "Fake" | "Calling" | "Pending"
+  confidenceScore Int?      // 0 - 100
+  transcript      String    @db.Text
+  notes           String?
+  
+  createdAt       DateTime  @default(now())
+
+  @@index([orderId])
+  @@map("call_logs")
+}
+
+// Multi-Channel Store Integrations
+model StoreConnection {
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  platform       String    // "Shopify" | "WooCommerce"
+  storeUrl       String    // e.g. "apex-store.myshopify.com" or "https://woo.apexbrands.com"
+  accessToken    String?   // Shopify Admin API access token (shpat_...)
+  consumerKey    String?   // WooCommerce REST API consumer key (ck_...)
+  consumerSecret String?   // WooCommerce REST API consumer secret (cs_...)
+  webhookSecret  String?   // Optional HMAC secret for webhooks
+  isActive       Boolean   @default(true)
+  lastSyncAt     DateTime?
+  
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@unique([userId, platform, storeUrl])
+  @@index([userId])
+  @@index([platform])
+  @@map("store_connections")
+}
