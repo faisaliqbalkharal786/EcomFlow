@@ -9,9 +9,9 @@ import {
   Clock, 
   PhoneOff, 
   FileText 
-} from 'lucide-react';
+ from 'lucide-react';
 
-export interface AICallLog {
+export interface AICallLog 
   id: string;
   customerName: string;
   phoneNumber: string;
@@ -19,11 +19,10 @@ export interface AICallLog {
   status: 'COMPLETED' | 'FAILED' | 'PENDING' | 'NO_ANSWER';
   duration: string;
   transcript: string;
-  createdAt: string;
-}
+  createdAt: string;}
 
 const mockAICallLogs: AICallLog[] = [
-  {
+  
     id: 'log-1',
     customerName: 'Ayesha Khan',
     phoneNumber: '+92 300 1234567',
@@ -42,15 +41,15 @@ const mockAICallLogs: AICallLog[] = [
     duration: '15s',
     transcript: 'Call attempted. Customer did not pick up the phone. Automated follow-up WhatsApp message sent.',
     createdAt: '15 mins ago'
-  }
+  
 ];
 
-interface AICallLogsModalProps {
+interface AICallLogsModalProps 
   isOpen: boolean;
   onClose: () => void;
-}
 
-export default function AICallLogsModal({ isOpen, onClose }: AICallLogsModalProps) {
+
+export default function AICallLogsModal({ isOpen, onClose }: AICallLogsModalProps) 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [selectedLog, setSelectedLog] = useState<AICallLog | null>(null);
@@ -65,9 +64,9 @@ export default function AICallLogsModal({ isOpen, onClose }: AICallLogsModalProp
     
     const matchesStatus = statusFilter === 'ALL' || log.status === statusFilter;
     return matchesSearch && matchesStatus;
-  });
+  );
 
-  const getStatusBadge = (status: AICallLog['status']) => {
+  const getStatusBadge = (status: AICallLog['status']) => 
     switch (status) {
       case 'COMPLETED':
         return (
