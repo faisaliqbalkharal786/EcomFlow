@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { 
@@ -142,7 +142,11 @@ export default function AICallLogsModal({ isOpen, onClose }: AICallLogsModalProp
               <button
                 key={status}
                 onClick={() => setStatusFilter(status)}
-                className={px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap }
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap ${
+                  statusFilter === status 
+                    ? 'bg-indigo-600 text-white shadow-sm' 
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
               >
                 {status.replace('_', ' ')}
               </button>
@@ -155,7 +159,7 @@ export default function AICallLogsModal({ isOpen, onClose }: AICallLogsModalProp
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
             {/* Logs List */}
-            <div className={lg:col-span-2 space-y-3 }>
+            <div className="lg:col-span-2 space-y-3">
               {filteredLogs.length === 0 ? (
                 <div className="text-center py-12 bg-white rounded-xl border border-slate-100 p-8">
                   <PhoneOff className="w-12 h-12 text-slate-300 mx-auto mb-3" />
@@ -166,7 +170,11 @@ export default function AICallLogsModal({ isOpen, onClose }: AICallLogsModalProp
                   <div 
                     key={log.id}
                     onClick={() => setSelectedLog(log)}
-                    className={p-4 rounded-xl border transition-all cursor-pointer bg-white }
+                    className={`p-4 rounded-xl border transition-all cursor-pointer bg-white ${
+                      selectedLog?.id === log.id 
+                        ? 'border-indigo-500 ring-2 ring-indigo-500/10 shadow-sm' 
+                        : 'border-slate-200/80 hover:border-slate-300 hover:shadow-sm'
+                    }`}
                   >
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
@@ -193,7 +201,7 @@ export default function AICallLogsModal({ isOpen, onClose }: AICallLogsModalProp
             </div>
 
             {/* Transcript Panel */}
-            <div className={lg:col-span-1 bg-white rounded-xl border border-slate-200/80 p-5 flex flex-col }>
+            <div className="lg:col-span-1 bg-white rounded-xl border border-slate-200/80 p-5 flex flex-col">
               {selectedLog ? (
                 <>
                   <div className="flex items-center justify-between pb-4 border-b border-slate-100">
